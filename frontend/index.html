@@ -85,11 +85,12 @@
             return;
         }
         aboutMeCard.innerHTML = `
-            <div class="w3-card-4 w3-margin w3-white">
-                <img src="${user.profile_image_url}" alt="My Photo" style="width:100%">
+            <div class="w3-card-4 w3-margin w3-white" style="text-align: center;">
+                <img src="${user.profile_image_url}" alt="My Photo" style="width:150px; height:150px; border-radius: 50%; object-fit: cover; display: block; margin: 10px auto;">
                 <div class="w3-container">
                     <h4><b>${user.username}</b></h4>
                     <p>${user.bio || '자기소개를 입력해주세요.'}</p>
+                    <a href="/profile.html" class="w3-button w3-blue w3-margin-top">회원정보 수정</a>
                 </div>
             </div>
         `;

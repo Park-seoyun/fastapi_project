@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>회원정보</title>
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>회원정보</h1>
+        <div id="profile-info">로딩 중...</div>
+        <div>
+            <a href="/update_profile.html" class="btn">회원정보 수정</a>
+            <a href="/change_password.html" class="btn">비밀번호 변경</a>
+        </div>
+    </div>
+
+    <script src="/assets/js/auth.js"></script>
+    <script>
+        async function loadProfile() {
+            const user = await getCurrentUser();
+            const profile = document.getElementById('profile-info');
+            if (!user) {
+                profile.innerHTML = "<p>로그인 필요</p>";
+                return;
+            }
+
+            console.log("✅ 이미지 경로 확인:", user.profile_image_url); // 여기서 경로 출력 확인
+
+            profile.innerHTML = `
+                <img src="${user.profile_image_url}" alt="프로필 이미지" width="150" style="border-radius:8px;"><br>
+                <strong>이름:</strong> ${user.username}<br>
+                <strong>이메일:</strong> ${user.email}<br>
+                <strong>소개:</strong> ${user.bio || "없음"}
+            `;
+        }
+        loadProfile();
+    </script>
+</body>
+</html>

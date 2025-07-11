@@ -1,60 +1,123 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>회원가입</title>
-    <link rel="stylesheet" href="/assets/css/style.css">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #89f7fe, #66a6ff);
+            font-family: 'Raleway', sans-serif;
+        }
+        .signup-container {
+            display: flex;
+            width: 850px;
+            max-width: 95%;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        .signup-left {
+            background: linear-gradient(135deg, #f6d365, #fda085);
+            color: #fff;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+        .signup-left h1 {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+        .signup-left p {
+            font-size: 16px;
+            line-height: 1.5;
+            text-align: center;
+        }
+        .signup-right {
+            flex: 1.3;
+            padding: 40px;
+        }
+        .signup-right h2 {
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+        .signup-form input, .signup-form textarea {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .signup-form button {
+            width: 100%;
+            background: #66a6ff;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .signup-form button:hover {
+            background: #528bd4;
+        }
+        .signup-form .footer-text {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        .signup-form .footer-text a {
+            color: #66a6ff;
+            text-decoration: none;
+        }
+        .signup-form .footer-text a:hover {
+            text-decoration: underline;
+        }
+        .error-text {
+            color: red;
+            font-size: 14px;
+            text-align: center;
+            margin-top: 10px;
+        }
+        @media (max-width: 768px) {
+            .signup-container {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="container">
-            <a href="/index.html" class="nav-brand">🚀 MSA Project</a>
-            <div class="nav-links">
-                <a href="/board_list.html" class="nav-link">게시판</a>
-                <a href="/blog_list.html" class="nav-link">블로그</a>
-            </div>
-            <div id="auth-links" class="nav-auth"></div>
+    <div class="signup-container">
+        <div class="signup-left">
+            <h1>Welcome!</h1>
+            <p>지금 가입하고<br>MSA 프로젝트를 시작해보세요.</p>
         </div>
-    </nav>
-    <main class="container">
-        <div class="form-container">
-            <h1>회원가입</h1>
-            <form id="register-form">
-                <p id="error-message" style="color:red; text-align: center;"></p>
-                <div>
-                    <label for="username">사용자 이름:</label>
-                    <input type="text" id="username" name="username" required>
-                </div>
-                <div>
-                    <label for="email">이메일 (로그인 ID):</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                <div>
-                    <label for="password">비밀번호:</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
-                <div>
-                    <label for="password_confirm">비밀번호 확인:</label>
-                    <input type="password" id="password_confirm" name="password_confirm" required>
-                </div>
-                <div>
-                    <label for="bio">자기소개 (선택사항):</label>
-                    <textarea id="bio" name="bio" rows="3"></textarea>
-                </div>
-                <div>
-                    <label for="profile_image">프로필 사진 (선택사항):</label>
-                    <input type="file" id="profile_image" name="profile_image" accept="image/*">
-                </div>
+        <div class="signup-right">
+            <h2>회원가입</h2>
+            <form class="signup-form" id="register-form">
+                <input type="text" id="username" name="username" placeholder="사용자 이름" required />
+                <input type="email" id="email" name="email" placeholder="이메일" required />
+                <input type="password" id="password" name="password" placeholder="비밀번호" required />
+                <input type="password" id="password_confirm" name="password_confirm" placeholder="비밀번호 확인" required />
+                <textarea id="bio" name="bio" rows="2" placeholder="자기소개 (선택사항)"></textarea>
+                <input type="file" id="profile_image" name="profile_image" accept="image/*">
                 <button type="submit" id="submit-btn">가입하기</button>
-                <p style="text-align: center; margin-top: 1rem; font-size: 0.9em;">
-                    이미 계정이 있으신가요? <a href="/login.html">로그인</a>
-                </p>
+                <p id="error-message" class="error-text"></p>
+                <p class="footer-text">이미 계정이 있으신가요? <a href="/login.html">로그인</a></p>
             </form>
         </div>
-    </main>
+    </div>
+
     <script>
         document.getElementById('register-form').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -67,8 +130,7 @@
             const password = document.getElementById('password').value;
             const passwordConfirm = document.getElementById('password_confirm').value;
             const imageInput = document.getElementById('profile_image');
-            
-            // 1. 비밀번호 확인
+
             if (password !== passwordConfirm) {
                 errorEl.innerText = '비밀번호가 일치하지 않습니다.';
                 submitBtn.disabled = false;
@@ -76,7 +138,6 @@
                 return;
             }
 
-            // 2. 텍스트 데이터만 먼저 추출
             const formData = new FormData(e.target);
             const textData = {
                 username: formData.get('username'),
@@ -84,21 +145,19 @@
                 password: password,
                 bio: formData.get('bio')
             };
-            console.log(textData);
+
             try {
-                // 3. 텍스트 데이터로 회원가입 및 자동 로그인 요청
                 const registerResponse = await fetch('/api/auth/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(textData)
                 });
-                
+
                 if (!registerResponse.ok) {
                     const errorData = await registerResponse.json();
                     throw new Error(errorData.detail || '회원가입에 실패했습니다.');
                 }
-                
-                // 4. 프로필 사진 파일이 있으면, 이어서 이미지 업로드 요청
+
                 const imageFile = imageInput.files[0];
                 if (imageFile) {
                     const imageFormData = new FormData();
@@ -107,16 +166,16 @@
                     const imageResponse = await fetch('/api/users/me/upload-image', {
                         method: 'POST',
                         body: imageFormData,
-                        credentials: 'include' // 자동 로그인된 세션 쿠키를 보내기 위해 필수
+                        credentials: 'include'
                     });
 
                     if (!imageResponse.ok) {
-                        console.error('이미지 업로드에 실패했지만, 회원가입은 완료되었습니다.');
+                        console.warn('이미지 업로드 실패 (회원가입은 완료).');
                     }
                 }
 
-                alert('회원가입이 완료되었습니다. 메인 페이지로 이동합니다.');
-                window.location.href = '/index.html';
+                alert('회원가입 완료!ㅁ 로그인 페이지로 이동합니다.');
+                window.location.href = '/login.html';
 
             } catch(error) {
                 errorEl.innerText = error.message;

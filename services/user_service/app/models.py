@@ -1,5 +1,6 @@
 from typing import Optional
 from sqlmodel import Field, SQLModel
+from pydantic import BaseModel
 
 class User(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -21,3 +22,16 @@ class UserPublic(SQLModel):
     email: str
     bio: Optional[str] = None
     profile_image_filename: Optional[str] = None
+    profile_image_url: Optional[str] = None 
+
+class UserLogin(BaseModel):
+    email: str
+    password: str
+
+class UserUpdate(SQLModel):
+    username: Optional[str] = None
+    bio: Optional[str] = None
+
+class UserChangePassword(SQLModel):
+    current_password: str
+    new_password: str

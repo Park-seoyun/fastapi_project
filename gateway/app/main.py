@@ -1,6 +1,8 @@
 import os
 import httpx
 from fastapi import FastAPI, Request, Response, HTTPException
+from fastapi import FastAPI, Request
+import httpx
 
 app = FastAPI(title="API Gateway")
 

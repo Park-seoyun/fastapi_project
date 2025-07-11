@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>회원정보 수정</title>
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>회원정보 수정</h1>
+        <form id="update-form">
+            <input type="text" id="username" placeholder="새 이름"><br>
+            <textarea id="bio" placeholder="소개"></textarea><br>
+            <input type="file" id="profile_image" accept="image/*"><br>
+            <button type="submit">저장</button>
+        </form>
+        <p id="message"></p>
+    </div>
+
+    <script>
+        document.getElementById("update-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const username = document.getElementById("username").value;
+            const bio = document.getElementById("bio").value;
+            const profileImage = document.getElementById("profile_image").files[0];
+
+            try {
+                // 사용자 정보 업데이트
+                await fetch("/api/users/me", {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username, bio })
+                });
+
+                // 프로필 이미지 업로드
+                if (profileImage) {
+                    const formData = new FormData();
+                    formData.append("file", profileImage);
+
+                    await fetch("/api/users/me/upload-image", {
+                        method: "POST",
+                        body: formData,
+                        credentials: "include"
+                    });
+                }
+
+                document.getElementById("message").innerText = "수정 완료!";
+                window.location.href = "/profile.html";
+            } catch (error) {
+                console.error(error);
+                document.getElementById("message").innerText = "수정 실패";
+            }
+        });
+    </script>
+</body>
+</html>
