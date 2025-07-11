@@ -1,189 +1,128 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8" />
-    <title>회원가입</title>
-    <style>
-        body {
-            margin: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(135deg, #89f7fe, #66a6ff);
-            font-family: 'Raleway', sans-serif;
-        }
-        .signup-container {
-            display: flex;
-            width: 850px;
-            max-width: 95%;
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-        }
-        .signup-left {
-            background: linear-gradient(135deg, #f6d365, #fda085);
-            color: #fff;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 40px;
-        }
-        .signup-left h1 {
-            font-size: 32px;
-            margin-bottom: 15px;
-        }
-        .signup-left p {
-            font-size: 16px;
-            line-height: 1.5;
-            text-align: center;
-        }
-        .signup-right {
-            flex: 1.3;
-            padding: 40px;
-        }
-        .signup-right h2 {
-            margin-bottom: 20px;
-            color: #333;
-            text-align: center;
-        }
-        .signup-form input, .signup-form textarea {
-            width: 100%;
-            padding: 12px 15px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-        .signup-form button {
-            width: 100%;
-            background: #66a6ff;
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 6px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        .signup-form button:hover {
-            background: #528bd4;
-        }
-        .signup-form .footer-text {
-            text-align: center;
-            margin-top: 15px;
-            font-size: 14px;
-        }
-        .signup-form .footer-text a {
-            color: #66a6ff;
-            text-decoration: none;
-        }
-        .signup-form .footer-text a:hover {
-            text-decoration: underline;
-        }
-        .error-text {
-            color: red;
-            font-size: 14px;
-            text-align: center;
-            margin-top: 10px;
-        }
-        @media (max-width: 768px) {
-            .signup-container {
-                flex-direction: column;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>회원가입</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap">
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle, #0b0f1a 0%, #050810 100%);
+      font-family: 'Orbitron', sans-serif;
+      color: #00ffcc;
+    }
+    .container {
+      background: #121a2f;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 0 20px #00ffcc33;
+      width: 400px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 1px solid #00ffcc;
+      border-radius: 8px;
+      background: #1a2238;
+      color: #00ffcc;
+      font-size: 14px;
+    }
+    button {
+      width: 100%;
+      background: #00ffcc;
+      color: #0b0f1a;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #66ffcc;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 13px;
+    }
+    .footer a {
+      color: #00ffff;
+      text-decoration: none;
+    }
+    .footer a:hover {
+      text-decoration: underline;
+    }
+    .error {
+      color: red;
+      font-size: 13px;
+      text-align: center;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
-    <div class="signup-container">
-        <div class="signup-left">
-            <h1>Welcome!</h1>
-            <p>지금 가입하고<br>MSA 프로젝트를 시작해보세요.</p>
-        </div>
-        <div class="signup-right">
-            <h2>회원가입</h2>
-            <form class="signup-form" id="register-form">
-                <input type="text" id="username" name="username" placeholder="사용자 이름" required />
-                <input type="email" id="email" name="email" placeholder="이메일" required />
-                <input type="password" id="password" name="password" placeholder="비밀번호" required />
-                <input type="password" id="password_confirm" name="password_confirm" placeholder="비밀번호 확인" required />
-                <textarea id="bio" name="bio" rows="2" placeholder="자기소개 (선택사항)"></textarea>
-                <input type="file" id="profile_image" name="profile_image" accept="image/*">
-                <button type="submit" id="submit-btn">가입하기</button>
-                <p id="error-message" class="error-text"></p>
-                <p class="footer-text">이미 계정이 있으신가요? <a href="/login.html">로그인</a></p>
-            </form>
-        </div>
-    </div>
+  <div class="container">
+    <h1>👽 외계인 등록</h1>
+    <form id="register-form">
+      <input type="text" name="username" placeholder="사용자 이름" required />
+      <input type="email" name="email" placeholder="이메일" required />
+      <input type="password" id="pw" name="password" placeholder="비밀번호" required />
+      <input type="password" id="pw2" placeholder="비밀번호 확인" required />
+      <textarea name="bio" placeholder="자기소개 (선택)"></textarea>
+      <input type="file" name="profile_image" accept="image/*" />
+      <button type="submit">회원가입</button>
+      <p id="error-message" class="error"></p>
+      <div class="footer">이미 계정이 있으신가요? <a href="/login.html">로그인</a></div>
+    </form>
+  </div>
+  <script>
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const pw = document.getElementById('pw').value;
+      const pw2 = document.getElementById('pw2').value;
+      const errorEl = document.getElementById('error-message');
+      if (pw !== pw2) return errorEl.innerText = '비밀번호가 일치하지 않습니다';
 
-    <script>
-        document.getElementById('register-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const submitBtn = document.getElementById('submit-btn');
-            const errorEl = document.getElementById('error-message');
-            errorEl.innerText = '';
-            submitBtn.disabled = true;
-            submitBtn.innerText = '처리 중...';
+      const formData = new FormData(e.target);
+      const jsonData = {
+        username: formData.get('username'),
+        email: formData.get('email'),
+        password: pw,
+        bio: formData.get('bio')
+      };
 
-            const password = document.getElementById('password').value;
-            const passwordConfirm = document.getElementById('password_confirm').value;
-            const imageInput = document.getElementById('profile_image');
-
-            if (password !== passwordConfirm) {
-                errorEl.innerText = '비밀번호가 일치하지 않습니다.';
-                submitBtn.disabled = false;
-                submitBtn.innerText = '가입하기';
-                return;
-            }
-
-            const formData = new FormData(e.target);
-            const textData = {
-                username: formData.get('username'),
-                email: formData.get('email'),
-                password: password,
-                bio: formData.get('bio')
-            };
-
-            try {
-                const registerResponse = await fetch('/api/auth/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(textData)
-                });
-
-                if (!registerResponse.ok) {
-                    const errorData = await registerResponse.json();
-                    throw new Error(errorData.detail || '회원가입에 실패했습니다.');
-                }
-
-                const imageFile = imageInput.files[0];
-                if (imageFile) {
-                    const imageFormData = new FormData();
-                    imageFormData.append("file", imageFile);
-
-                    const imageResponse = await fetch('/api/users/me/upload-image', {
-                        method: 'POST',
-                        body: imageFormData,
-                        credentials: 'include'
-                    });
-
-                    if (!imageResponse.ok) {
-                        console.warn('이미지 업로드 실패 (회원가입은 완료).');
-                    }
-                }
-
-                alert('회원가입 완료!ㅁ 로그인 페이지로 이동합니다.');
-                window.location.href = '/login.html';
-
-            } catch(error) {
-                errorEl.innerText = error.message;
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerText = '가입하기';
-            }
+      try {
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(jsonData)
         });
-    </script>
+        if (!res.ok) {
+          const error = await res.json();
+          errorEl.innerText = error.detail || '회원가입 실패';
+          return;
+        }
+        const img = formData.get('profile_image');
+        if (img && img.size > 0) {
+          const imgData = new FormData();
+          imgData.append('file', img);
+          await fetch('/api/users/me/upload-image', { method: 'POST', body: imgData, credentials: 'include' });
+        }
+        alert('회원가입 완료!');
+        window.location.href = '/login.html';
+      } catch (err) {
+        errorEl.innerText = '서버 오류';
+      }
+    });
+  </script>
 </body>
 </html>

@@ -1,20 +1,68 @@
-<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <title>회원정보 수정</title>
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap">
+    <style>
+        body {
+            margin: 0;
+            background: radial-gradient(circle, #0b0f1a 0%, #050810 100%);
+            color: #00ffcc;
+            font-family: 'Orbitron', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: #121a2f;
+            border-radius: 16px;
+            box-shadow: 0 0 20px #00ffcc33;
+            padding: 40px;
+            width: 400px;
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #00ffcc;
+            border-radius: 8px;
+            background: #1a2238;
+            color: #00ffcc;
+        }
+        button {
+            width: 100%;
+            background: #00ffcc;
+            color: #0b0f1a;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #66ffcc;
+        }
+        .message {
+            margin-top: 10px;
+            color: #66ffcc;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>회원정보 수정</h1>
+        <h1>🛸 프로필 수정</h1>
         <form id="update-form">
             <input type="text" id="username" placeholder="새 이름"><br>
             <textarea id="bio" placeholder="소개"></textarea><br>
             <input type="file" id="profile_image" accept="image/*"><br>
             <button type="submit">저장</button>
         </form>
-        <p id="message"></p>
+        <p id="message" class="message"></p>
     </div>
 
     <script>
@@ -25,14 +73,12 @@
             const profileImage = document.getElementById("profile_image").files[0];
 
             try {
-                // 사용자 정보 업데이트
                 await fetch("/api/users/me", {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ username, bio })
                 });
 
-                // 프로필 이미지 업로드
                 if (profileImage) {
                     const formData = new FormData();
                     formData.append("file", profileImage);
@@ -45,7 +91,7 @@
                 }
 
                 document.getElementById("message").innerText = "수정 완료!";
-                window.location.href = "/profile.html";
+                setTimeout(() => window.location.href = "/profile.html", 1000);
             } catch (error) {
                 console.error(error);
                 document.getElementById("message").innerText = "수정 실패";

@@ -3,105 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <title>MSA 프로젝트 메인</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
-    <link rel="stylesheet" href="/assets/css/style.css">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap">
+    <link rel="stylesheet" href="/assets/css/alien-theme.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="/alien-apple-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/alien-icon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/alien-icon-16.png">
+    <style>
+        body {
+            background: radial-gradient(ellipse at center, #0b0f1a 0%, #050810 100%);
+            color: #00ffcc;
+            font-family: 'Orbitron', sans-serif;
+            margin: 0;
+        }
+        .navbar {
+            background: #121a2f;
+            padding: 10px 0;
+            box-shadow: 0 0 10px #00ffcc33;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-brand {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00ffcc;
+            text-decoration: none;
+        }
+        .nav-links a, .nav-auth a {
+            color: #00ffcc;
+            margin-left: 20px;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover, .nav-auth a:hover {
+            color: #66ffcc;
+        }
+        h1, h2, h3, h4, h5 {
+            color: #66ffcc;
+        }
+        .w3-card-4 {
+            background: #1a2238;
+            box-shadow: 0 0 15px #00ffcc22;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .w3-button {
+            background: #00ffcc;
+            color: #0b0f1a;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .w3-button:hover {
+            background: #66ffcc;
+        }
+        a {
+            color: #00ffff;
+        }
+        img {
+            border-radius: 6px;
+        }
+        .btn {
+            background: #00ffcc;
+            color: #000;
+            padding: 10px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+        .btn:hover {
+            background: #66ffcc;
+        }
+    </style>
 </head>
 <body>
-<div class="w3-content">
-    <nav class="navbar">
-        <div class="container">
-            <a href="/index.html" class="nav-brand">🚀 MSA Project</a>
-            <div class="nav-links">
-                <a href="/board_list.html" class="nav-link">자유게시판</a>
-                <a href="/blog_list.html" class="nav-link">기술 블로그</a>
-            </div>
-            <div id="auth-links" class="nav-auth"></div>
-        </div>
-    </nav>
-
-    <header class="w3-container w3-center w3-padding-32">
-        <h1><b>MSA BLOG & BOARD</b></h1>
-        <p>Welcome to my MSA project built with FastAPI and Docker.</p>
-    </header>
-
-    <main class="w3-row">
-        <div class="w3-col l8 s12">
-            <div id="featured-post-container">
-                <p class="w3-container">로딩 중...</p>
-            </div>
-        </div>
-        <aside class="w3-col l4">
-            <div id="about-me-card"></div>
-        </aside>
-    </main>
-</div>
-
-<script src="/assets/js/auth.js"></script>
-<script>
-    const featuredPostContainer = document.getElementById('featured-post-container');
-    const aboutMeCard = document.getElementById('about-me-card');
-    const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
-
-    async function renderFeaturedPost() {
-        try {
-            const response = await fetch('/api/blog/articles?page=1&size=1');
-            if (!response.ok) throw new Error('게시글 로딩 실패');
-            
-            const data = await response.json();
-            if (data.items.length === 0) {
-                featuredPostContainer.innerHTML = '<div class="w3-card-4 w3-margin w3-white"><div class="w3-container"><p>최신 글이 없습니다.</p></div></div>';
-                return;
-            }
-
-            const article = data.items[0];
-            const formattedDate = new Date(article.created_at).toLocaleDateString('ko-KR', dateOptions);
-            const imageUrl = article.image_url || 'https://www.w3schools.com/w3images/woods.jpg';
-
-            featuredPostContainer.innerHTML = `
-                <div class="w3-card-4 w3-margin w3-white">
-                    <img src="${imageUrl}" alt="Featured Post" style="width:100%">
-                    <div class="w3-container">
-                        <h3><b>${article.title}</b></h3>
-                        <h5>${article.author_username || 'Unknown'}, <span class="w3-opacity">${formattedDate}</span></h5>
-                    </div>
-                    <div class="w3-container">
-                        <p>${article.content ? article.content.substring(0, 200) : ''}...</p>
-                        <p><a href="/blog_detail.html?id=${article.id}" class="w3-button w3-border w3-padding-large"><b>READ MORE »</b></a></p>
-                    </div>
+    <div class="w3-content">
+        <nav class="navbar">
+            <div class="container">
+                <a href="/index.html" class="nav-brand">🛸 Alien MSA</a>
+                <div class="nav-links">
+                    <a href="/board_list.html" class="nav-link">📡 자유게시판</a>
+                    <a href="/blog_list.html" class="nav-link">👽 기술 블로그</a>
                 </div>
-            `;
-        } catch (error) {
-            console.error("Failed to load featured post:", error);
-            featuredPostContainer.innerHTML = `<div class="w3-card-4 w3-margin w3-white"><div class="w3-container"><p style="color:red;">${error.message}</p></div></div>`;
+                <div id="auth-links" class="nav-auth"></div>
+            </div>
+        </nav>
+
+        <header class="w3-container w3-center w3-padding-32">
+            <h1><b>👾 MSA OUTPOST</b></h1>
+            <p>FastAPI & Docker 기반 외계 기술 프로젝트에 오신 걸 환영합니다.</p>
+        </header>
+
+        <main class="w3-row">
+            <div class="w3-col l8 s12">
+                <div id="featured-post-container">
+                    <p class="w3-container">우주 정보를 수신 중...</p>
+                </div>
+            </div>
+            <aside class="w3-col l4">
+                <div id="about-me-card" style="min-height: 340px;"></div>
+            </aside>
+        </main>
+    </div>
+
+    <script src="/assets/js/auth.js"></script>
+    <script>
+        const featuredPostContainer = document.getElementById('featured-post-container');
+        const aboutMeCard = document.getElementById('about-me-card');
+        const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+
+        async function renderFeaturedPost() {
+            try {
+                const response = await fetch('/api/blog/articles?page=1&size=1');
+                if (!response.ok) throw new Error('최신 외계 기술 글 수신 실패');
+
+                const data = await response.json();
+                if (data.items.length === 0) {
+                    featuredPostContainer.innerHTML = '<div class="w3-card-4 w3-margin w3-white"><div class="w3-container"><p>글이 존재하지 않습니다.</p></div></div>';
+                    return;
+                }
+
+                const article = data.items[0];
+                const formattedDate = new Date(article.created_at).toLocaleDateString('ko-KR', dateOptions);
+                const imageUrl = article.image_url || 'https://www.w3schools.com/w3images/space.jpg';
+
+                featuredPostContainer.innerHTML = `
+                    <div class="w3-card-4 w3-margin w3-white">
+                        <img src="${imageUrl}" alt="Featured Post" style="width:100%">
+                        <div class="w3-container">
+                            <h3><b>${article.title}</b></h3>
+                            <h5>${article.author_username || 'Alien'}, <span class="w3-opacity">${formattedDate}</span></h5>
+                        </div>
+                        <div class="w3-container">
+                            <p>${article.content ? article.content.substring(0, 200) : ''}...</p>
+                            <p><a href="/blog_detail.html?id=${article.id}" class="w3-button"><b>🛰 READ MORE</b></a></p>
+                        </div>
+                    </div>
+                `;
+            } catch (error) {
+                console.error("Failed to load featured post:", error);
+                featuredPostContainer.innerHTML = `<div class="w3-card-4 w3-margin w3-white"><div class="w3-container"><p style="color:red;">${error.message}</p></div></div>`;
+            }
         }
-    }
 
     function renderAboutMe(user) {
-        if (!user) {
-            aboutMeCard.style.display = 'none';
-            return;
-        }
-        aboutMeCard.innerHTML = `
-            <div class="w3-card-4 w3-margin w3-white" style="text-align: center;">
-                <img src="${user.profile_image_url}" alt="My Photo" style="width:150px; height:150px; border-radius: 50%; object-fit: cover; display: block; margin: 10px auto;">
-                <div class="w3-container">
-                    <h4><b>${user.username}</b></h4>
-                    <p>${user.bio || '자기소개를 입력해주세요.'}</p>
-                    <a href="/profile.html" class="w3-button w3-blue w3-margin-top">회원정보 수정</a>
-                </div>
-            </div>
-        `;
+    if (!user) {
+        aboutMeCard.style.display = 'none';
+        return;
     }
+    aboutMeCard.innerHTML = `
+        <div class="w3-card-4 w3-margin w3-white" style="text-align: center; padding-bottom: 20px;">
+            <img src="${user.profile_image_url}" alt="My Photo" style="width:150px; height:150px; border-radius: 50%; object-fit: cover; margin: 10px auto;">
+            <div class="w3-container">
+                <h4><b>${user.username}</b></h4>
+                <p>${user.bio || '외계인을 소개해주세요 🛸'}</p>
+                <a href="/profile.html" class="w3-button w3-margin-top" style="margin-bottom: 10px;">프로필 수정</a>
+            </div>
+        </div>
+    `;
+}
 
-    document.addEventListener('DOMContentLoaded', async () => {
-        const user = await getCurrentUser();
-        renderNavbar(user); // auth.js의 함수
-        renderFeaturedPost();
-        renderAboutMe(user);
-    });
-</script>
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = await getCurrentUser();
+            renderNavbar(user); // auth.js의 함수
+            renderFeaturedPost();
+            renderAboutMe(user);
+        });
+    </script>
 </body>
 </html>

@@ -1,143 +1,110 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8" />
-    <title>로그인</title>
-    <link rel="stylesheet" href="/assets/css/style.css">
-    <style>
-        body {
-            margin: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(135deg,#89f7fe, #66a6ff);
-            font-family: 'Raleway', sans-serif;
-        }
-        .login-container {
-            display: flex;
-            width: 800px;
-            max-width: 95%;
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-        }
-        .login-left {
-            background:linear-gradient(135deg, #f6d365, #fda085);;
-            color: #fff;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 40px;
-        }
-        .login-left h1 {
-            font-size: 32px;
-            margin-bottom: 15px;
-        }
-        .login-left p {
-            font-size: 16px;
-            line-height: 1.5;
-            text-align: center;
-        }
-        .login-right {
-            flex: 1;
-            padding: 40px;
-        }
-        .login-right h2 {
-            margin-bottom: 20px;
-            color: #333;
-            text-align: center;
-        }
-        .login-form input {
-            width: 100%;
-            padding: 12px 15px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-        .login-form button {
-            width: 100%;
-            background: #43cea2;
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 6px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        .login-form button:hover {
-            background: #2ca187;
-        }
-        .login-form .footer-text {
-            text-align: center;
-            margin-top: 15px;
-            font-size: 14px;
-        }
-        .login-form .footer-text a {
-            color: #43cea2;
-            text-decoration: none;
-        }
-        .login-form .footer-text a:hover {
-            text-decoration: underline;
-        }
-        .error-text {
-            color: red;
-            font-size: 14px;
-            text-align: center;
-            margin-top: 10px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>로그인</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap">
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle, #0b0f1a 0%, #050810 100%);
+      font-family: 'Orbitron', sans-serif;
+      color: #00ffcc;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #121a2f;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 0 20px #00ffcc33;
+      width: 360px;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 1px solid #00ffcc;
+      border-radius: 8px;
+      background: #1a2238;
+      color: #00ffcc;
+      font-size: 14px;
+    }
+    button {
+      width: 100%;
+      background: #00ffcc;
+      color: #0b0f1a;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #66ffcc;
+    }
+    .footer {
+      margin-top: 15px;
+      font-size: 13px;
+    }
+    .footer a {
+      color: #00ffff;
+      text-decoration: none;
+    }
+    .footer a:hover {
+      text-decoration: underline;
+    }
+    .error {
+      color: red;
+      font-size: 13px;
+      margin-top: 10px;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-left">
-            <h1>Welcome Back!</h1>
-            <p>MSA Project에 오신 것을 환영합니다.<br>지금 로그인하고 시작해보세요.</p>
-        </div>
-        <div class="login-right">
-            <h2>로그인</h2>
-            <form class="login-form" id="login-form">
-                <input type="email" id="email" name="email" placeholder="이메일" required />
-                <input type="password" id="password" name="password" placeholder="비밀번호" required />
-                <button type="submit">로그인</button>
-                <p id="error-message" class="error-text"></p>
-                <p class="footer-text">계정이 없으신가요? <a href="/register.html">회원가입</a></p>
-            </form>
-        </div>
-    </div>
+  <div class="container">
+    <h1>🛸 외계 포털 로그인</h1>
+    <form id="login-form">
+      <input type="email" name="email" placeholder="이메일" required />
+      <input type="password" name="password" placeholder="비밀번호" required />
+      <button type="submit">로그인</button>
+      <p id="error-message" class="error"></p>
+      <div class="footer">계정이 없으신가요? <a href="/register.html">회원가입</a></div>
+    </form>
+  </div>
 
-<script>
+  <script>
     document.getElementById('login-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const errorEl = document.getElementById('error-message');
-        errorEl.innerText = '';
-        const formData = new FormData(e.target);
-        const data = Object.fromEntries(formData.entries());
-
-        try {
-            const response = await fetch('/api/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-            if (response.ok) {
-                window.location.href = '/index.html';
-            } else {
-                const errorData = await response.json();
-                if (typeof errorData.detail === 'string') {
-                    errorEl.innerText = errorData.detail;
-                } else {
-                    errorEl.innerText = JSON.stringify(errorData.detail);
-                }
-            }
-        } catch (err) {
-            errorEl.innerText = "서버와 통신할 수 없습니다.";
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData);
+      const errorEl = document.getElementById('error-message');
+      errorEl.innerText = '';
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        if (!res.ok) {
+          const error = await res.json();
+          errorEl.innerText = error.detail || '로그인 실패';
+          return;
         }
+        window.location.href = '/index.html';
+      } catch {
+        errorEl.innerText = '서버 오류';
+      }
     });
-</script>
+  </script>
 </body>
 </html>

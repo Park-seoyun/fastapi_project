@@ -3,16 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <title>회원정보</title>
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap">
+    <style>
+        body {
+            margin: 0;
+            background: radial-gradient(circle, #0b0f1a 0%, #050810 100%);
+            color: #00ffcc;
+            font-family: 'Orbitron', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: #121a2f;
+            border-radius: 16px;
+            box-shadow: 0 0 20px #00ffcc33;
+            padding: 40px;
+            text-align: center;
+            width: 400px;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+        }
+        p {
+            margin: 5px 0;
+        }
+        .btn {
+            display: inline-block;
+            background: #00ffcc;
+            color: #0b0f1a;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin: 5px;
+        }
+        .btn:hover {
+            background: #66ffcc;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>회원정보</h1>
+        <h1>👽 외계인 프로필</h1>
         <div id="profile-info">로딩 중...</div>
         <div>
-            <a href="/update_profile.html" class="btn">회원정보 수정</a>
+            <a href="/update_profile.html" class="btn">프로필 수정</a>
             <a href="/change_password.html" class="btn">비밀번호 변경</a>
         </div>
+        <a href="/index.html" class="btn">홈으로</a>
     </div>
 
     <script src="/assets/js/auth.js"></script>
@@ -24,14 +70,11 @@
                 profile.innerHTML = "<p>로그인 필요</p>";
                 return;
             }
-
-            console.log("✅ 이미지 경로 확인:", user.profile_image_url); // 여기서 경로 출력 확인
-
             profile.innerHTML = `
-                <img src="${user.profile_image_url}" alt="프로필 이미지" width="150" style="border-radius:8px;"><br>
-                <strong>이름:</strong> ${user.username}<br>
-                <strong>이메일:</strong> ${user.email}<br>
-                <strong>소개:</strong> ${user.bio || "없음"}
+                <img src="${user.profile_image_url}" alt="프로필 이미지">
+                <p><strong>이름:</strong> ${user.username}</p>
+                <p><strong>이메일:</strong> ${user.email}</p>
+                <p><strong>소개:</strong> ${user.bio || "없음"}</p>
             `;
         }
         loadProfile();
