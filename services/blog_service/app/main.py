@@ -6,6 +6,7 @@ from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 from redis.asyncio import Redis
 import httpx  # ✅ user_service 호출용
+from fastapi.responses import JSONResponse
 
 from models import (
     BlogArticle, BlogArticleCreate, BlogArticleUpdate, BlogArticlePublic, ArticleImage
@@ -99,7 +100,8 @@ async def create_blog(
 
 
 # ✅ 게시글 목록 조회
-@app.get("/api/blogs/", response_model=list[BlogArticlePublic])
+
+@app.get("/api/blogs/")
 async def list_blogs(
     session: Annotated[AsyncSession, Depends(get_session)],
     redis: Annotated[Redis, Depends(get_redis)],
@@ -122,7 +124,8 @@ async def list_blogs(
         image = img_result.first()
         blog_public_list.append(await create_blog_public(blog, session, image, current_user_id=current_user_id))
 
-    return blog_public_list
+    # ✅ 항상 items와 total 포함해서 반환
+    return {"items": blog_public_list, "total": len(blog_public_list)}
 
 
 # ✅ 게시글 단일 조회
@@ -248,3 +251,4 @@ async def upload_article_image(
     await session.commit()
 
     return {"message": "이미지 업로드 완료", "image_url": f"/static/articles/{filename}"}
+

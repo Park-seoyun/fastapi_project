@@ -1,101 +1,93 @@
-<!-- ✅ frontend/blog_detail.html -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8" />
-    <title>블로그 상세</title>
-    <link rel="stylesheet" href="/styles.css" />
+    <title>기술 블로그 상세</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap">
+    <style>
+        body {
+            background: radial-gradient(circle, #0b0f1a 0%, #050810 100%);
+            color: #00ffcc;
+            font-family: 'Orbitron', sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .blog-card {
+            background: #1a2238;
+            border-radius: 12px;
+            box-shadow: 0 0 15px #00ffcc33;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 800px;
+        }
+        .blog-thumbnail {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        .btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 20px;
+            background: #00ffcc;
+            color: #0b0f1a;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .btn:hover {
+            background: #66ffcc;
+        }
+    </style>
 </head>
 <body>
     <h1>👽 기술 블로그 상세</h1>
     <div id="blog-detail"></div>
-    <a href="/blogs/blog_list.html">← 목록으로</a>
+
+    <p>
+        <a href="/blogs/blog_list.html" class="btn">← 목록으로</a>
+        <!-- ✅ 수정 버튼 항상 표시 -->
+        <a id="edit-btn" href="#" class="btn">✏️ 수정하기</a>
+    </p>
 
     <script>
         async function loadBlogDetail() {
             const params = new URLSearchParams(window.location.search);
             const blogId = params.get("id");
             if (!blogId) {
-                document.getElementById("blog-detail").innerHTML = "<p>잘못된 요청입니다.</p>";
+                document.getElementById("blog-detail").innerHTML = "<p style='color:red;'>잘못된 요청입니다.</p>";
                 return;
             }
 
             try {
-                const res = await fetch(`/api/blogs/${blogId}`, {
-                    credentials: "include" // ✅ 세션 쿠키 포함
-                });
+                const res = await fetch(`/api/blogs/${blogId}`, { credentials: "include" });
                 if (!res.ok) throw new Error("블로그 상세 로드 실패");
 
                 const blog = await res.json();
-                console.log("is_owner:", blog.is_owner); // ✅ 디버깅용
-                const blogDetailHTML = `
+
+                // ✅ 수정 버튼 링크 설정
+                const editBtn = document.getElementById("edit-btn");
+                editBtn.href = `/blogs/blog_edit.html?id=${blog.id}`;
+
+                // ✅ 블로그 내용 표시
+                document.getElementById("blog-detail").innerHTML = `
                     <div class="blog-card">
                         <img src="${blog.image_url || '/default-blog.png'}" alt="Blog Image" class="blog-thumbnail" />
                         <h2>${blog.title}</h2>
                         <p>${blog.content}</p>
                         <p><strong>작성자:</strong> ${blog.author_username}</p>
                         <p><strong>작성일:</strong> ${new Date(blog.create_at).toLocaleString()}</p>
-                        ${blog.is_owner ? `
-                            <button onclick="editBlog(${blog.id})">✏️ 수정</button>
-                            <button onclick="deleteBlog(${blog.id})">🗑 삭제</button>
-                        ` : ""}
                     </div>
                 `;
-                document.getElementById("blog-detail").innerHTML = blogDetailHTML;
             } catch (err) {
                 document.getElementById("blog-detail").innerHTML = `<p style="color:red;">${err.message}</p>`;
             }
         }
 
-        async function editBlog(blogId) {
-            window.location.href = `/blogs/blog_edit.html?id=${blogId}`;
-        }
-
-        async function deleteBlog(blogId) {
-            if (!confirm("정말 이 게시글을 삭제하시겠습니까?")) return;
-            try {
-                const res = await fetch(`/api/blogs/${blogId}`, {
-                    method: "DELETE",
-                    credentials: "include"
-                });
-                if (!res.ok) throw new Error("삭제 실패");
-
-                alert("게시글이 삭제되었습니다.");
-                window.location.href = "/blogs/blog_list.html";
-            } catch (err) {
-                alert(`삭제 오류: ${err.message}`);
-            }
-        }
-
         document.addEventListener("DOMContentLoaded", loadBlogDetail);
     </script>
-
-    <style>
-        .blog-card {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin: 10px 0;
-            padding: 10px;
-            background: #1a2238;
-            color: #fff;
-        }
-        .blog-thumbnail {
-            width: 100%;
-            max-height: 300px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-        button {
-            margin: 5px;
-            padding: 8px 15px;
-            background: #00ffcc;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background: #66ffcc;
-        }
-    </style>
 </body>
 </html>

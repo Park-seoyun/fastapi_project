@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>게시글 수정</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap">
     <style>
@@ -19,8 +19,8 @@
             background: #121a2f;
             border-radius: 16px;
             box-shadow: 0 0 20px #00ffcc33;
-            padding: 40px;
-            width: 500px;
+            padding: 30px;
+            width: 450px;
             text-align: center;
         }
         h1 {
@@ -79,7 +79,7 @@
                 const blog = await res.json();
                 document.getElementById("title").value = blog.title;
                 document.getElementById("content").value = blog.content;
-                document.getElementById("tags").value = blog.tags;
+                document.getElementById("tags").value = blog.tags || "";
             } catch (err) {
                 document.getElementById("message").innerText = "불러오기 오류: " + err.message;
             }

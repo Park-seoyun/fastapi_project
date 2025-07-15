@@ -3,7 +3,42 @@
 <head>
     <meta charset="UTF-8" />
     <title>블로그 목록</title>
-    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap">
+    <style>
+        body {
+            background: radial-gradient(circle, #0b0f1a 0%, #050810 100%);
+            color: #00ffcc;
+            font-family: 'Orbitron', sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .blog-card {
+            border: 1px solid #00ffcc;
+            border-radius: 10px;
+            background: #1a2238;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 0 10px #00ffcc33;
+        }
+        .blog-thumbnail {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #00ffcc;
+            color: #0b0f1a;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+        .btn:hover {
+            background: #66ffcc;
+        }
+    </style>
 </head>
 <body>
     <h1>👽 기술 블로그</h1>
@@ -15,11 +50,13 @@
 
         async function loadBlogs() {
             try {
-                const res = await fetch("/api/blogs/");
+                const res = await fetch("/api/blogs/", { credentials: "include" });
                 if (!res.ok) throw new Error("블로그 목록 로드 실패");
-                const blogs = await res.json();
+                
+                const data = await res.json();
+                const blogs = data.items; // ✅ items 배열만 가져오기
 
-                if (blogs.length === 0) {
+                if (!blogs || blogs.length === 0) {
                     blogListContainer.innerHTML = "<p>등록된 글이 없습니다.</p>";
                     return;
                 }
@@ -33,7 +70,7 @@
                             <p><strong>작성자:</strong> ${blog.author_username || "👽 Unknown"}</p>
                             <p>${blog.content.substring(0, 100)}...</p>
                             <p><small>📅 ${formattedDate}</small></p>
-                            <p><a href="/blogs/blog_detail.html?id=${blog.id}">📖 자세히 보기</a></p>
+                            <p><a href="/blogs/blog_detail.html?id=${blog.id}" class="btn">📖 자세히 보기</a></p>
                         </div>
                     `;
                 }).join("");
@@ -44,33 +81,5 @@
 
         document.addEventListener("DOMContentLoaded", loadBlogs);
     </script>
-
-    <style>
-        .blog-card {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin: 10px 0;
-            padding: 10px;
-            background: #1a2238;
-            color: #fff;
-        }
-        .blog-thumbnail {
-            width: 100%;
-            max-height: 200px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            background: #00ffcc;
-            color: #000;
-            text-decoration: none;
-            border-radius: 6px;
-        }
-        .btn:hover {
-            background: #66ffcc;
-        }
-    </style>
 </body>
 </html>
