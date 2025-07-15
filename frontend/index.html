@@ -88,7 +88,7 @@
                 <a href="/index.html" class="nav-brand">🛸 Alien MSA</a>
                 <div class="nav-links">
                     <a href="/board_list.html" class="nav-link">📡 자유게시판</a>
-                    <a href="/blog_list.html" class="nav-link">👽 기술 블로그</a>
+                    <a href="/blogs/blog_list.html" class="nav-link">👽 기술 블로그</a>
                 </div>
                 <div id="auth-links" class="nav-auth"></div>
             </div>
@@ -119,7 +119,8 @@
 
         async function renderFeaturedPost() {
             try {
-                const response = await fetch('/api/blog/articles?page=1&size=1');
+                // ✅ API 경로 수정: blog_service로 요청
+                const response = await fetch('/api/blogs/?page=1&size=1');
                 if (!response.ok) throw new Error('최신 외계 기술 글 수신 실패');
 
                 const data = await response.json();
@@ -129,7 +130,7 @@
                 }
 
                 const article = data.items[0];
-                const formattedDate = new Date(article.created_at).toLocaleDateString('ko-KR', dateOptions);
+                const formattedDate = new Date(article.create_at).toLocaleDateString('ko-KR', dateOptions);
                 const imageUrl = article.image_url || 'https://www.w3schools.com/w3images/space.jpg';
 
                 featuredPostContainer.innerHTML = `
@@ -141,7 +142,7 @@
                         </div>
                         <div class="w3-container">
                             <p>${article.content ? article.content.substring(0, 200) : ''}...</p>
-                            <p><a href="/blog_detail.html?id=${article.id}" class="w3-button"><b>🛰 READ MORE</b></a></p>
+                            <p><a href="/blogs/blog_detail.html?id=${article.id}" class="w3-button"><b>🛰 READ MORE</b></a></p>
                         </div>
                     </div>
                 `;
@@ -151,23 +152,22 @@
             }
         }
 
-    function renderAboutMe(user) {
-    if (!user) {
-        aboutMeCard.style.display = 'none';
-        return;
-    }
-    aboutMeCard.innerHTML = `
-        <div class="w3-card-4 w3-margin w3-white" style="text-align: center; padding-bottom: 20px;">
-            <img src="${user.profile_image_url}" alt="My Photo" style="width:150px; height:150px; border-radius: 50%; object-fit: cover; margin: 10px auto;">
-            <div class="w3-container">
-                <h4><b>${user.username}</b></h4>
-                <p>${user.bio || '외계인을 소개해주세요 🛸'}</p>
-                <a href="/profile.html" class="w3-button w3-margin-top" style="margin-bottom: 10px;">프로필 수정</a>
-            </div>
-        </div>
-    `;
-}
-
+        function renderAboutMe(user) {
+            if (!user) {
+                aboutMeCard.style.display = 'none';
+                return;
+            }
+            aboutMeCard.innerHTML = `
+                <div class="w3-card-4 w3-margin w3-white" style="text-align: center; padding-bottom: 20px;">
+                    <img src="${user.profile_image_url}" alt="My Photo" style="width:150px; height:150px; border-radius: 50%; object-fit: cover; margin: 10px auto;">
+                    <div class="w3-container">
+                        <h4><b>${user.username}</b></h4>
+                        <p>${user.bio || '외계인을 소개해주세요 🛸'}</p>
+                        <a href="/profile.html" class="w3-button w3-margin-top" style="margin-bottom: 10px;">프로필 수정</a>
+                    </div>
+                </div>
+            `;
+        }
 
         document.addEventListener('DOMContentLoaded', async () => {
             const user = await getCurrentUser();

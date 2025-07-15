@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 수정</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap">
+    <style>
+        body {
+            margin: 0;
+            background: radial-gradient(circle, #0b0f1a 0%, #050810 100%);
+            color: #00ffcc;
+            font-family: 'Orbitron', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: #121a2f;
+            border-radius: 16px;
+            box-shadow: 0 0 20px #00ffcc33;
+            padding: 40px;
+            width: 500px;
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #00ffcc;
+            border-radius: 8px;
+            background: #1a2238;
+            color: #00ffcc;
+        }
+        button {
+            width: 100%;
+            background: #00ffcc;
+            color: #0b0f1a;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #66ffcc;
+        }
+        .message {
+            margin-top: 10px;
+            color: #66ffcc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✏️ 게시글 수정</h1>
+        <form id="edit-form">
+            <input type="text" id="title" placeholder="제목" required><br>
+            <textarea id="content" placeholder="내용" rows="5" required></textarea><br>
+            <input type="text" id="tags" placeholder="태그 (쉼표로 구분)"><br>
+            <input type="file" id="image" accept="image/*"><br>
+            <button type="submit">수정 완료</button>
+        </form>
+        <p id="message" class="message"></p>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const blogId = params.get("id");
+
+        async function loadBlogData() {
+            try {
+                const res = await fetch(`/api/blogs/${blogId}`, { credentials: "include" });
+                if (!res.ok) throw new Error("게시글 불러오기 실패");
+
+                const blog = await res.json();
+                document.getElementById("title").value = blog.title;
+                document.getElementById("content").value = blog.content;
+                document.getElementById("tags").value = blog.tags;
+            } catch (err) {
+                document.getElementById("message").innerText = "불러오기 오류: " + err.message;
+            }
+        }
+
+        document.getElementById("edit-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const title = document.getElementById("title").value;
+            const content = document.getElementById("content").value;
+            const tags = document.getElementById("tags").value;
+            const imageFile = document.getElementById("image").files[0];
+
+            try {
+                // 1️⃣ 게시글 수정
+                const res = await fetch(`/api/blogs/${blogId}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    body: JSON.stringify({ title, content, tags })
+                });
+                if (!res.ok) throw new Error("게시글 수정 실패");
+
+                // 2️⃣ 이미지 업로드 (선택적)
+                if (imageFile) {
+                    const formData = new FormData();
+                    formData.append("file", imageFile);
+
+                    const imgRes = await fetch(`/api/blogs/${blogId}/upload-image`, {
+                        method: "POST",
+                        body: formData,
+                        credentials: "include"
+                    });
+                    if (!imgRes.ok) throw new Error("이미지 업로드 실패");
+                }
+
+                document.getElementById("message").innerText = "수정 완료!";
+                setTimeout(() => window.location.href = `/blogs/blog_detail.html?id=${blogId}`, 1000);
+            } catch (err) {
+                document.getElementById("message").innerText = "수정 실패: " + err.message;
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", loadBlogData);
+    </script>
+</body>
+</html>

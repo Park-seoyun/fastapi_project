@@ -158,7 +158,16 @@ async def update_current_user(
     await session.refresh(user)
 
     return create_user_public(user)
-
+# ✅ 특정 사용자 ID로 유저 정보 가져오기
+@app.get("/api/users/{user_id}", response_model=UserPublic)
+async def get_user_by_id(
+    user_id: int,
+    session: Annotated[AsyncSession, Depends(get_session)]
+):
+    user = await session.get(User, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return create_user_public(user)
 # ✅ 비밀번호 변경
 @app.put("/api/users/me/change-password")
 async def change_password(
