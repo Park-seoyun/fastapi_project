@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Optional
 from zoneinfo import ZoneInfo
 from sqlmodel import Field, SQLModel
+from typing import List, Any
 
 class ArticleImage(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -13,19 +14,23 @@ class BlogArticle(SQLModel, table=True):
     title: str = Field(index=True)
     content: str
     create_at: datetime = Field(default_factory=lambda: datetime.now(ZoneInfo("Asia/Seoul")))
+    author_username: str 
     owner_id: int
     tags: Optional[str] = Field(default=None)
+    cnt: int = Field(default=0)
 
 # ✅ Pydantic 모델들
 class BlogArticleCreate(SQLModel):
     title: str
     content: str
     tags: Optional[str] = None
+    
 
 class BlogArticleUpdate(SQLModel):
     title: Optional[str] = None
     content: Optional[str] = None
     tags: Optional[str] = None
+    
 
 class BlogArticlePublic(SQLModel):
     id: int
@@ -34,5 +39,13 @@ class BlogArticlePublic(SQLModel):
     create_at: datetime
     owner_id: int
     tags: Optional[str] = None
+    cnt: int 
     image_url: Optional[str] = None
     author_username: Optional[str] = None  # ✅ 작성자 이름 추가
+
+# class PaginatedResponse(SQLModel):
+#     total: int
+#     page: int
+#     size: int
+#     pages: int
+#     items: List[dict]=[]

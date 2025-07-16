@@ -1,5 +1,5 @@
 import os
-from typing import Annotated, Optional
+from typing import Annotated, Optional, List, Set
 from fastapi import FastAPI, status, Depends, HTTPException, Cookie, UploadFile, File
 from fastapi.staticfiles import StaticFiles
 from sqlmodel import select
@@ -7,6 +7,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from redis.asyncio import Redis
 import httpx  # ✅ user_service 호출용
 from fastapi.responses import JSONResponse
+from fastapi import Query
 
 from models import (
     BlogArticle, BlogArticleCreate, BlogArticleUpdate, BlogArticlePublic, ArticleImage
@@ -37,7 +38,7 @@ def health_check():
     return {"status": "Blog service running"}
 
 
-# ✅ 게시글 + 이미지 URL + 작성자 이름 + 소유자 여부 생성 함수
+# ✅ 게시글 + 이미지 URL + 소유자 여부 생성 함수
 async def create_blog_public(
     blog: BlogArticle,
     session: AsyncSession,
@@ -49,24 +50,12 @@ async def create_blog_public(
         if image else None
     )
 
-    # ✅ 작성자 이름 user_service API 호출
-    author_username = f"사용자_{blog.owner_id}"
-    try:
-        async with httpx.AsyncClient() as client:
-            user_resp = await client.get(f"{USER_SERVICE_URL}/{blog.owner_id}")
-            if user_resp.status_code == 200:
-                user_data = user_resp.json()
-                author_username = user_data.get("username", author_username)
-    except Exception as e:
-        print(f"작성자 이름 가져오기 실패: {e}")
-
     is_owner = blog.owner_id == current_user_id
 
     return BlogArticlePublic.model_validate(
         blog,
         update={
             "image_url": image_url,
-            "author_username": author_username,
             "is_owner": is_owner,
         }
     )
@@ -87,7 +76,26 @@ async def create_blog(
     if not owner_id:
         raise HTTPException(status_code=401, detail="세션이 만료되었습니다. 다시 로그인해주세요.")
 
-    blog = BlogArticle.model_validate(blog_data, update={"owner_id": int(owner_id)})
+    # ✅ 작성자 이름 user_service API 호출
+    author_username = f"사용자_{owner_id}"
+    try:
+        async with httpx.AsyncClient() as client:
+            user_resp = await client.get(f"{USER_SERVICE_URL}/{owner_id}")
+            if user_resp.status_code == 200:
+                user_data = user_resp.json()
+                author_username = user_data.get("username", author_username)
+    except Exception as e:
+        print(f"작성자 이름 가져오기 실패: {e}")
+
+    # ✅ 작성자 이름을 DB에 저장
+    blog = BlogArticle.model_validate(
+        blog_data,
+        update={
+            "owner_id": int(owner_id),
+            "author_username": author_username
+        }
+    )
+
     session.add(blog)
     await session.commit()
     await session.refresh(blog)
@@ -99,8 +107,7 @@ async def create_blog(
     return await create_blog_public(blog, session, image, current_user_id=int(owner_id))
 
 
-# ✅ 게시글 목록 조회
-
+# ✅ 게시글 목록 조회 (인기글 + 최신글 반환)
 @app.get("/api/blogs/")
 async def list_blogs(
     session: Annotated[AsyncSession, Depends(get_session)],
@@ -113,22 +120,65 @@ async def list_blogs(
         if owner_id:
             current_user_id = int(owner_id)
 
-    statement = select(BlogArticle).order_by(BlogArticle.create_at.desc())
-    result = await session.exec(statement)
-    blogs = result.all()
+    # ✅ 인기 게시글 조회 (조회수 기준 상위 5개)
+    popular_stmt = select(BlogArticle).order_by(BlogArticle.cnt.desc()).limit(5)
+    popular_result = await session.exec(popular_stmt)
+    popular_blogs = popular_result.all()
 
-    blog_public_list = []
-    for blog in blogs:
+    popular_blog_public_list = []
+    for blog in popular_blogs:
         img_stmt = select(ArticleImage).where(ArticleImage.article_id == blog.id)
         img_result = await session.exec(img_stmt)
         image = img_result.first()
-        blog_public_list.append(await create_blog_public(blog, session, image, current_user_id=current_user_id))
+        popular_blog_public_list.append(
+            await create_blog_public(blog, session, image, current_user_id=current_user_id)
+        )
 
-    # ✅ 항상 items와 total 포함해서 반환
-    return {"items": blog_public_list, "total": len(blog_public_list)}
+    # ✅ 최신 게시글 조회 (인기 게시글과 별도로 전체)
+    recent_stmt = select(BlogArticle).order_by(BlogArticle.create_at.desc())
+    recent_result = await session.exec(recent_stmt)
+    recent_blogs = recent_result.all()
+
+    recent_blog_public_list = []
+    for blog in recent_blogs:
+        img_stmt = select(ArticleImage).where(ArticleImage.article_id == blog.id)
+        img_result = await session.exec(img_stmt)
+        image = img_result.first()
+        recent_blog_public_list.append(
+            await create_blog_public(blog, session, image, current_user_id=current_user_id)
+        )
+
+    # ✅ 인기글과 최신글을 모두 반환
+    return {
+        "popular": popular_blog_public_list,
+        "recent": {
+            "items": recent_blog_public_list,
+            "total": len(recent_blog_public_list)
+        }
+    }
 
 
-# ✅ 게시글 단일 조회
+# ✅ 모든 태그 목록 조회
+@app.get("/api/blogs/tags", response_model=List[str])
+async def get_all_tags(session: Annotated[AsyncSession, Depends(get_session)]):
+    query = select(BlogArticle.tags).where(BlogArticle.tags != None)
+    results = await session.exec(query)
+
+    all_tags: set[str] = set()
+
+    for tags_str in results:
+        if not tags_str:
+            continue
+        if isinstance(tags_str, tuple):
+            tags_str = tags_str[0]
+
+        tags = [tag.strip() for tag in tags_str.split(",") if tag.strip()]
+        all_tags.update(tags)
+
+    return sorted(all_tags)
+
+
+# ✅ 게시글 단일 조회 (조회수 증가)
 @app.get("/api/blogs/{blog_id}", response_model=BlogArticlePublic)
 async def get_blog(
     blog_id: int,
@@ -145,6 +195,12 @@ async def get_blog(
     blog = await session.get(BlogArticle, blog_id)
     if not blog:
         raise HTTPException(status_code=404, detail="게시글을 찾을 수 없습니다.")
+
+    # ✅ 무조건 조회수 증가
+    blog.cnt += 1
+    session.add(blog)
+    await session.commit()
+    await session.refresh(blog)
 
     stmt = select(ArticleImage).where(ArticleImage.article_id == blog.id)
     img_result = await session.exec(stmt)
@@ -251,4 +307,3 @@ async def upload_article_image(
     await session.commit()
 
     return {"message": "이미지 업로드 완료", "image_url": f"/static/articles/{filename}"}
-

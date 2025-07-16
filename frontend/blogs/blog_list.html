@@ -12,19 +12,41 @@
             margin: 0;
             padding: 20px;
         }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        h1 {
+            margin: 0;
+        }
+        .section-title {
+            font-size: 1.5em;
+            margin: 20px 0 10px;
+            border-bottom: 2px solid #00ffcc;
+            padding-bottom: 5px;
+        }
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
         .blog-card {
             border: 1px solid #00ffcc;
             border-radius: 10px;
             background: #1a2238;
             padding: 15px;
-            margin: 15px 0;
             box-shadow: 0 0 10px #00ffcc33;
+            display: flex;
+            flex-direction: column;
         }
         .blog-thumbnail {
             width: 100%;
-            max-height: 200px;
+            height: 150px;
             object-fit: cover;
             border-radius: 8px;
+            margin-bottom: 10px;
         }
         .btn {
             display: inline-block;
@@ -34,47 +56,94 @@
             text-decoration: none;
             border-radius: 6px;
             font-weight: bold;
+            text-align: center;
         }
         .btn:hover {
             background: #66ffcc;
         }
+        .blog-card h3 {
+            margin: 10px 0 5px;
+        }
+        .blog-card p {
+            margin: 5px 0;
+        }
+        .cnt {
+            color: #66ffcc;
+            font-size: 0.9em;
+        }
     </style>
 </head>
 <body>
-    <h1>👽 기술 블로그</h1>
-    <div id="blog-list"></div>
+    <header>
+        <h1>👽 기술 블로그</h1>
+        <a href="http://localhost/index.html" class="btn">🏠 홈으로</a>
+    </header>
+
+    <!-- ✅ 인기 게시글 섹션 -->
+    <h2 class="section-title">🔥 인기 게시글</h2>
+    <div id="popular-list" class="blog-grid"></div>
+
+    <!-- ✅ 최신 게시글 섹션 -->
+    <h2 class="section-title">📝 최신 게시글</h2>
+    <div id="blog-list" class="blog-grid"></div>
+
     <a href="/blogs/blog_create.html" class="btn">✏️ 새 글 작성</a>
 
     <script>
+        const popularListContainer = document.getElementById("popular-list");
         const blogListContainer = document.getElementById("blog-list");
 
         async function loadBlogs() {
             try {
                 const res = await fetch("/api/blogs/", { credentials: "include" });
                 if (!res.ok) throw new Error("블로그 목록 로드 실패");
-                
-                const data = await res.json();
-                const blogs = data.items; // ✅ items 배열만 가져오기
 
-                if (!blogs || blogs.length === 0) {
-                    blogListContainer.innerHTML = "<p>등록된 글이 없습니다.</p>";
-                    return;
+                const data = await res.json();
+                const popularBlogs = data.popular;
+                const recentBlogs = data.recent.items;
+
+                // ✅ 인기글 렌더링
+                if (popularBlogs && popularBlogs.length > 0) {
+                    popularListContainer.innerHTML = popularBlogs.map(blog => {
+                        const formattedDate = new Date(blog.create_at).toLocaleString();
+                        return `
+                            <div class="blog-card">
+                                <img src="${blog.image_url || '/default-blog.png'}" alt="Blog Image" class="blog-thumbnail" />
+                                <h3>${blog.title}</h3>
+                                <p><strong>작성자:</strong> ${blog.author_username || "👽 Unknown"}</p>
+                                <p class="cnt">조회수: ${blog.cnt}</p>
+                                <p>${blog.content.substring(0, 80)}...</p>
+                                <p><small>📅 ${formattedDate}</small></p>
+                                <a href="/blogs/blog_detail.html?id=${blog.id}" class="btn">📖 자세히 보기</a>
+                            </div>
+                        `;
+                    }).join("");
+                } else {
+                    popularListContainer.innerHTML = "<p>🔥 인기 게시글이 없습니다.</p>";
                 }
 
-                blogListContainer.innerHTML = blogs.map(blog => {
-                    const formattedDate = new Date(blog.create_at).toLocaleString();
-                    return `
-                        <div class="blog-card">
-                            <img src="${blog.image_url || '/default-blog.png'}" alt="Blog Image" class="blog-thumbnail" />
-                            <h3>${blog.title}</h3>
-                            <p><strong>작성자:</strong> ${blog.author_username || "👽 Unknown"}</p>
-                            <p>${blog.content.substring(0, 100)}...</p>
-                            <p><small>📅 ${formattedDate}</small></p>
-                            <p><a href="/blogs/blog_detail.html?id=${blog.id}" class="btn">📖 자세히 보기</a></p>
-                        </div>
-                    `;
-                }).join("");
+                // ✅ 최신글 렌더링
+                if (recentBlogs && recentBlogs.length > 0) {
+                    blogListContainer.innerHTML = recentBlogs.map(blog => {
+                        const formattedDate = new Date(blog.create_at).toLocaleString();
+                        return `
+                            <div class="blog-card">
+                                <img src="${blog.image_url || '/default-blog.png'}" alt="Blog Image" class="blog-thumbnail" />
+                                <h3>${blog.title}</h3>
+                                <p><strong>작성자:</strong> ${blog.author_username || "👽 Unknown"}</p>
+                                <p class="cnt">조회수: ${blog.cnt}</p>
+                                <p>${blog.content.substring(0, 100)}...</p>
+                                <p><small>📅 ${formattedDate}</small></p>
+                                <a href="/blogs/blog_detail.html?id=${blog.id}" class="btn">📖 자세히 보기</a>
+                            </div>
+                        `;
+                    }).join("");
+                } else {
+                    blogListContainer.innerHTML = "<p>📝 등록된 최신 글이 없습니다.</p>";
+                }
+
             } catch (err) {
+                popularListContainer.innerHTML = `<p style="color:red;">${err.message}</p>`;
                 blogListContainer.innerHTML = `<p style="color:red;">${err.message}</p>`;
             }
         }

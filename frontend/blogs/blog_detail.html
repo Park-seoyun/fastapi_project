@@ -25,6 +25,7 @@
             max-height: 400px;
             object-fit: cover;
             border-radius: 10px;
+            margin-bottom: 15px;
         }
         .btn {
             display: inline-block;
@@ -40,6 +41,11 @@
         }
         .btn:hover {
             background: #66ffcc;
+        }
+        .info {
+            font-size: 0.95em;
+            color: #66ffcc;
+            margin-top: 8px;
         }
     </style>
 </head>
@@ -68,7 +74,7 @@
 
                 const blog = await res.json();
 
-                // ✅ 수정 버튼 링크 설정
+                // ✅ 수정 버튼 링크 항상 설정
                 const editBtn = document.getElementById("edit-btn");
                 editBtn.href = `/blogs/blog_edit.html?id=${blog.id}`;
 
@@ -78,8 +84,9 @@
                         <img src="${blog.image_url || '/default-blog.png'}" alt="Blog Image" class="blog-thumbnail" />
                         <h2>${blog.title}</h2>
                         <p>${blog.content}</p>
-                        <p><strong>작성자:</strong> ${blog.author_username}</p>
-                        <p><strong>작성일:</strong> ${new Date(blog.create_at).toLocaleString()}</p>
+                        <p class="info"><strong>작성자:</strong> ${blog.author_username}</p>
+                        <p class="info"><strong>작성일:</strong> ${new Date(blog.create_at).toLocaleString()}</p>
+                        <p class="info"><strong>조회수:</strong> ${blog.cnt}</p>
                     </div>
                 `;
             } catch (err) {
